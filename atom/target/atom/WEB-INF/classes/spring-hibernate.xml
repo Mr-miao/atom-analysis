@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/aop
+    	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+    	http://www.springframework.org/schema/tx
+    	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+        ">
+
+	<!-- Hibernate4 -->
+	<!-- 加载资源文件  其中包含变量信息，必须在Spring配置文件的最前面加载，即第一个加载-->
+	<context:property-placeholder location="classpath:sys-db.properties" />
+	
+	<!-- 配置数据源,使用c3p0 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.user}" />
+		<property name="password" value="${jdbc.pass}" />
+		<!--连接池中保留的最小连接数。-->
+		<property name="minPoolSize" value="2" />
+		<!--连接池中保留的最大连接数。Default: 15 -->
+		<property name="maxPoolSize" value="3" />
+		<!--初始化时获取的连接数，取值应在minPoolSize与maxPoolSize之间。Default: 3 -->
+		<property name="initialPoolSize" value="3" />
+		<!--最大空闲时间,600秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
+		<property name="maxIdleTime" value="600" />
+		<!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 3 -->
+		<property name="acquireIncrement" value="3" />
+		<!--JDBC的标准参数，用以控制数据源内加载的PreparedStatements数量。但由于预缓存的statements  
+		 属于单个connection而不是整个连接池。所以设置这个参数需要考虑到多方面的因素。   如果maxStatements与maxStatementsPerConnection均为0，则缓存被关闭。Default: 0-->
+		<property name="maxStatements" value="0" />
+	</bean>
+	
+	<!-- 集成hibernate配置 -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties" ref="hibernateProperties" />
+		<property name="packagesToScan">
+			<list>
+				<!-- 可以加多个包 -->
+				<value>com.nantian.atom.po</value>
+				<value>com.nantian.atom.generated.po</value>
+			</list>
+		</property>
+	</bean>
+	 <bean id="jdbcTemplate"  class="org.springframework.jdbc.core.JdbcTemplate" >  
+	    <property name="dataSource" ref="dataSource" ></property>  
+	</bean>
+	<bean id="hibernateProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<!-- 当你使用mysql的时候，使用的是org.hibernate.dialect.MySQLInnoDBDialect -->
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.jdbc.fetch_size">${hibernate.jdbc.fetch_size}</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.use_sql_comments">${hibernate.use_sql_comments}</prop>
+				<!--Hibernate的缓存部分，可以不用，直接在DAO层进行配置二级缓存 -->
+				<prop key="hibernate.cache.region.factory_class">${hibernate.cache.provider_class}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+				<prop key="hibernate.default_schema">${hibernate.default_schema}</prop>
+			</props>
+		</property>
+	</bean>
+
+
+	<!-- 事务配置 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- 切面配置  -->
+	<!-- <aop:config proxy-target-class="true"> -->
+	<aop:config proxy-target-class="true">
+		<aop:pointcut id="transactionPointcut" expression="execution(* *..service*..*(..))" />
+		<aop:pointcut id="transactionPointcut1" expression="execution(* com.nantian.atom.generated.dao.*.*(..))" /> 
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="transactionPointcut" />
+	</aop:config>
+
+
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" propagation="REQUIRED" />
+			<tx:method name="find*" read-only="true" propagation="REQUIRED" />
+			<tx:method name="*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="del*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="search*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="pager*" read-only="true" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+
+	
+</beans>

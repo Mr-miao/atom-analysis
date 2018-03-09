@@ -1,0 +1,59 @@
+@charset "utf-8";
+.container-ant{width:100%;}
+.row-ant{width:100%;margin:0px;padding:0px;}
+.row-ant .col-sm-1-ant, .col-sm-2-ant, .col-sm-3-ant, .col-sm-4-ant, .col-sm-5-ant, .col-sm-6-ant, .col-sm-7-ant, .col-sm-8-ant, .col-sm-9-ant, .col-sm-10-ant,.col-sm-11-ant, .col-sm-12-ant{float:left;}
+.col-sm-1-ant{width:8.3%;}
+.col-sm-2-ant{width:16.6%;}
+.col-sm-3-ant{width:24.9%;}
+.col-sm-4-ant{width:33.2%;}
+.col-sm-5-ant{width:41.5%;}
+.col-sm-6-ant{width:49.8%;}
+.col-sm-7-ant{width:58.1%;}
+.col-sm-8-ant{width:66.4%;}
+.col-sm-9-ant{width:74.7%;}
+.col-sm-10-ant{width:83%;}
+.col-sm-11-ant{width:91.3%;}
+.col-sm-12-ant{width:99.6%;}
+
+/*右部对齐*/
+.tx-right{text-align:right;}
+.tx-center{text-align:center;}
+.top-default{margin-top:6px;}
+.overflow-none{overflow:none;}
+
+body{background:#E4E7EA;}
+.panel{margin-left:6px;margin-right:6px;margin-bottom:12px;}
+.query-area{margin-top:6px;}/*条件查询区域*/
+#edit-win{padding:6px;}/*新增、编辑时的窗口*/
+.menu-lan{margin-bottom:6px;}/*新增、编辑、删除菜单栏*/
+.none{display:none;}
+.border-none{border:none;}
+.fengye{text-align:center;}
+#edit-win th span,#add-win th span,#update-win th span{color:red;}
+
+/*表格排序标签*/
+#tb-data thead th:hover{cursor:pointer;}
+.tb-sort{background: url('images/sort_both.png') no-repeat center right;}
+.tb-sort-both{background: url('images/sort_both.png') no-repeat center right;}
+.tb-desc{background: url('images/sort_desc.png') no-repeat center right;}
+.tb-asc{background: url('images/sort_asc.png') no-repeat center right;}
+
+/*高级查询窗口*/
+#query-advance-win{padding:10px;}
+#query-advance-win .row{margin-top:6px !important;}
+
+/*树状菜单*/
+.tree-area{height:120px;overflow:scroll;}
+
+/*批量编辑*/
+#batch-edit-win #batch-edit-content{width:99%;overflow:scroll;}
+#batch-edit-win th span{color:red;}
+#batch-edit-btn-submit{margin-right:100px;}
+
+/*表格宽度控制
+#tb-data{width:100%;table-layout:fixed;}*/
+#tb-data td{max-width:300px;min-width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/*#tb-data{display:flex;flex-flow:column;height:200px;width:100%;}
+#td-data thead{flex: 0 0 auto;width:calc(100% - 16px);display: table;table-layout:fixed;}
+#td-data tbody{flex: 1 1 auto; display: block; overflow: auto;}
+#td-datat tbody tr{width: 100%;display: table;table-layout: fixed;} */
